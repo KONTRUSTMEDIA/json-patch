@@ -734,6 +734,7 @@ pub fn merge_rtb(
     doc: &mut Value,
     patch: &Value,
     original_doc: &Value,
+    supply_partner: &str,
     seller_id: Option<&str>,
     seller_domain: Option<&str>,
     seller_tag_id: Option<&str>,
@@ -767,6 +768,7 @@ pub fn merge_rtb(
                             imp,
                             &value,
                             original_doc,
+                            supply_partner,
                             seller_id,
                             seller_domain,
                             seller_tag_id,
@@ -826,7 +828,8 @@ pub fn merge_rtb(
         // search for a special type object
         // {
         //    "_type": "map",
-        //    "key": "__bidrequest/app/bundle/id",
+        //    "key": "__bidrequest/app/bundle/id", // will evaluate the __bidrequest/app/bundle/id passed and return map[${__bidrequest.app.bundle.id}]
+        //    "key": "supply_source", // will evaluate the supply_source passed and return map[${supply_source}]
         //    "map": {
         //        "best_app1": "1",
         //        "best_app2": "2",
@@ -837,10 +840,44 @@ pub fn merge_rtb(
             let map_key = &value["key"];
             let map_table = &value["map"];
 
+            // check key is string
+            if !map_key.is_string() {
+                // did not found the key in the map. return None
+                println!("[ERROR] key is not string!!!");
+                continue;
+            }
+
             // println!("map_key: {:#?}", map_key);
             // println!("map: {:#?}", map_table);
+            if map_key.as_str().unwrap().to_ascii_lowercase() == "supply_partner" {
+                // println!("supply_partner: [{:#?}]", supply_partner);
+                // let supply_partner = match supply_partner {
+                //     Some(sp) => {
+                //         // *(doc.pointer_mut(&format!("/{}", key)).unwrap()) = v.clone();
+                //         map_table.get(supply_partner.unwrap())
+                //     }
+                //     None => {
+                //         map.remove(key.as_str());
+                //         continue;
+                //     }
+                // };
 
-            if map_key.is_string() && map_key.as_str().unwrap().starts_with("__bidrequest") {
+                // println!("new_val: {:#?}", new_val);
+                // println!("key: {:#?}", key);
+                // println!("doc: {:#?}", map);
+                match map_table.get(supply_partner) {
+                    Some(sid) => {
+                        // *(doc.pointer_mut(&format!("/{}", key)).unwrap()) = v.clone();
+                        // println!("sid: {:#?}", sid);
+                        map.insert(key.to_string(), sid.clone());
+                    }
+                    None => {
+                        map.remove(key.as_str());
+                    }
+                }
+            }
+
+            if map_key.as_str().unwrap().starts_with("__bidrequest") {
                 let doc_path = map_key
                     .as_str()
                     .unwrap()
@@ -867,12 +904,9 @@ pub fn merge_rtb(
                         }
                         None => {
                             map.remove(key.as_str());
-                            continue;
                         }
                     }
                 }
-            } else {
-                println!("key is not string or does not start with __bidrequest");
             }
             continue;
         }
@@ -885,6 +919,7 @@ pub fn merge_rtb(
                 map.entry(key.as_str()).or_insert(Value::Null),
                 &value,
                 original_doc,
+                supply_partner,
                 seller_id,
                 seller_domain,
                 seller_tag_id,
