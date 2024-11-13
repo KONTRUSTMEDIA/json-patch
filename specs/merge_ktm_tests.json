@@ -251,9 +251,7 @@
     },
     "expected": {
       "title": "Goodbye!",
-      "device": {
-        "ifa": "ifa"
-      },
+      "device": {},
       "imp": [
         {
           "id": "1",
@@ -320,9 +318,7 @@
       "user": {
         "id": "vovacooper"
       },
-      "device": {
-        "ifa": "ifa"
-      },
+      "device": {},
       "imp": [
         {
           "id": "1",
@@ -400,11 +396,9 @@
       "user": {
         "id": "vovacooper"
       },
+      "device": {},
       "app": {
         "bundle": "in.crossy.daily_crossword"
-      },
-      "device": {
-        "ifa": "ifa"
       },
       "imp": [
         {
@@ -483,9 +477,7 @@
       "user": {
         "id": "vovacooper"
       },
-      "device": {
-        "ifa": "ifa"
-      },
+      "device": {},
       "app": {
         "bundle": "some_bundle"
       },
@@ -564,9 +556,7 @@
       "user": {
         "id": "vovacooper"
       },
-      "device": {
-        "ifa": "ifa"
-      },
+      "device": {},
       "app": {
         "bundle": "some_bundle"
       },
@@ -619,6 +609,106 @@
       "user": {
         "id": "vovacooper",
         "sid": "works"
+      }
+    },
+    "merge": true
+  },
+  {
+    "comment": "12. ktmrtb map object from supply_partner",
+    "doc": {
+      "id": "uuid"
+    },
+    "patch": {
+      "schain": {
+        "ver": "1.0",
+        "complete": 1,
+        "nodes": [
+          {
+            "key": "val"
+          },
+          "vova",
+          {
+            "asi": "selectmedia.asia",
+            "rid": "__bidrequest/id",
+            "sid": {
+              "key": "supply_partner",
+              "map": {
+                "vova": "works"
+              },
+              "_type": "map"
+            },
+            "hp": 1
+          }
+        ]
+      }
+    },
+    "expected": {
+      "id": "uuid",
+      "schain": {
+        "ver": "1.0",
+        "complete": 1,
+        "nodes": [
+          {
+            "key": "val"
+          },
+          "vova",
+          {
+            "asi": "selectmedia.asia",
+            "sid": "works",
+            "rid": "uuid",
+            "hp": 1
+          }
+        ]
+      }
+    },
+    "merge": true
+  },
+  {
+    "comment": "13. ktmrtb map object from supply_partner bad",
+    "doc": {
+      "id": "uuid"
+    },
+    "patch": {
+      "schain": {
+        "ver": "1.0",
+        "complete": 1,
+        "nodes": [
+          {
+            "key": "val"
+          },
+          "vova",
+          {
+            "asi": "selectmedia.asia",
+            "rid": "__bidrequest/id",
+            "sid": {
+              "key": "supply_partner",
+              "map": {
+                "bad_key": "works"
+              },
+              "_type": "map"
+            },
+            "hp": 1
+          }
+        ]
+      }
+    },
+    "expected": {
+      "id": "uuid",
+      "schain": {
+        "ver": "1.0",
+        "complete": 1,
+        "nodes": [
+          {
+            "key": "val"
+          },
+          "vova",
+          {
+            "asi": "selectmedia.asia",
+            "rid": "uuid",
+            "sid": null,
+            "hp": 1
+          }
+        ]
       }
     },
     "merge": true
