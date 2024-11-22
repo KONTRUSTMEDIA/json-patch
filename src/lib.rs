@@ -741,6 +741,25 @@ fn inner_merge(doc: &mut Value, patch: &Value, original_doc: &Value) {
             continue;
         }
 
+        // in special case where key == nodes (modify all imp vector)
+        if key == "__nodes_last" {
+            let nodes_vector = map.get_mut("nodes");
+            // let impression_vector = doc.pointer_mut("/imp");
+            match nodes_vector {
+                Some(nodes_vector) => {
+                    // get last element pf array
+                    let mut last_node = nodes_vector.as_array_mut().unwrap().last_mut().unwrap();
+                    inner_merge(&mut last_node, &value, original_doc);
+
+                    // for node in nodes_vector.as_array_mut().unwrap() {
+                    //     inner_merge(node, &value, original_doc);
+                    // }
+                }
+                None => continue,
+            }
+            continue;
+        }
+
         // let map = doc.as_object_mut().unwrap();
         if value.is_null() {
             map.remove(key.as_str());

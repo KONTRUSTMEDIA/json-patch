@@ -712,5 +712,68 @@
       }
     },
     "merge": true
+  },
+  {
+    "comment": "14. __nodes",
+    "doc": {
+      "id": "uuid",
+      "source": {
+        "fd": 0,
+        "ext": {
+          "schain": {
+            "ver": "1.0",
+            "nodes": [
+              {
+                "hp": 1,
+                "asi": "smaato.com",
+                "sid": "1001000319"
+              },
+              {
+                "hp": 1,
+                "asi": "smaato.com",
+                "sid": "1001000318"
+              }
+            ],
+            "complete": 1
+          }
+        }
+      }
+    },
+    "patch": {
+      "source": {
+        "ext": {
+          "schain": {
+            "__nodes_last": {
+              "asi": "vova.com"
+            }
+          }
+        }
+      }
+    },
+    "expected": {
+      "id": "uuid",
+      "source": {
+        "fd": 0,
+        "ext": {
+          "schain": {
+            "ver": "1.0",
+            "nodes": [
+              {
+                "hp": 1,
+                "asi": "smaato.com",
+                "sid": "1001000319"
+              },
+              {
+                "hp": 1,
+                "asi": "vova.com",
+                "sid": "1001000318"
+              }
+            ],
+            "complete": 1
+          }
+        }
+      }
+    },
+    "merge": true
   }
 ]
