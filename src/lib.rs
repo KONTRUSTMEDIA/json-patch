@@ -726,6 +726,17 @@ fn inner_merge(doc: &mut Value, patch: &Value, original_doc: &Value) {
     for (key, value) in patch.iter_mut() {
         // let mut value = value.clone();
 
+        // if starts with ? we do not create an empty element in the original json.
+        // so the value will be modified if exists but not created.
+        let mut is_update = false;
+        let key = if key.starts_with("?") {
+            is_update = true;
+            // remove ? from the key
+            key.strip_prefix("?").unwrap()
+        } else {
+            key
+        };
+
         // in special case where key == imps (modify all imp vector)
         if key == "imps" {
             let impression_vector = map.get_mut("imp");
@@ -762,13 +773,20 @@ fn inner_merge(doc: &mut Value, patch: &Value, original_doc: &Value) {
 
         // let map = doc.as_object_mut().unwrap();
         if value.is_null() {
-            map.remove(key.as_str());
+            map.remove(key);
         } else {
-            inner_merge(
-                map.entry(key.as_str()).or_insert(Value::Null),
-                &value,
-                original_doc,
-            );
+            if is_update {
+                // do not create new element if not exists
+                if map.contains_key(key) {
+                    // if key already exists, merge the value
+                    inner_merge(map.get_mut(key).unwrap(), &value, original_doc);
+                }
+            } else {
+                // default
+                // if key already exists, merge the value
+                // else create new element
+                inner_merge(map.entry(key).or_insert(Value::Null), &value, original_doc);
+            }
         }
     }
 }
